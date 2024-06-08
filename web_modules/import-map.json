@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "canvas-context": "./canvas-context.js",
+    "debounce": "./debounce.js",
+    "es-module-shims": "./es-module-shims.js",
+    "es-module-shims/debug": "./es-module-shims/debug.js",
+    "es-module-shims/wasm": "./es-module-shims/wasm.js",
+    "pex-color": "./pex-color.js"
+  }
+}

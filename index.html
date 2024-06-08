@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>maxwell-triangle by Damien Seguin (https://github.com/dmnsgn)</title>
+    <style>
+      :root {
+        --color-dark: #404040;
+        --color-light: #f2f2f2;
+        --color-accent: #fd5e62;
+      }
+
+      body {
+        margin: 0;
+        overscroll-behavior: none;
+        font-family: sans-serif;
+        color: var(--color-dark);
+        background-color: var(--color-light);
+      }
+
+      main {
+        padding: 0 20px;
+      }
+
+      canvas {
+        float: left;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>maxwell-triangle</h1>
+      <canvas></canvas>
+      <input type="color" value="#ff3333" />
+    </main>
+    <script async src="web_modules/es-module-shims.js" type="module"></script>
+    <script src="web_modules/import-map.json" type="importmap-shim"></script>
+
+    <script type="module-shim">
+      import MaxwellTriangle from "./index.js";
+      import canvasContext from "canvas-context";
+      import { create, fromHex } from "pex-color";
+      import debounce from "debounce";
+
+      const size = 256;
+
+      const mainElement = document.querySelector("main");
+      const canvas = mainElement.querySelector("canvas");
+      const inputElement = mainElement.querySelector("input[type='color']");
+
+      let currentColor = fromHex(create(), inputElement.value);
+
+      const { context } = canvasContext("2d", {
+        canvas,
+        width: size,
+        height: size,
+      });
+      mainElement.appendChild(canvas);
+
+      const maxwellTriangle = new MaxwellTriangle(size);
+
+      const strokeCircle = (context, x, y, r, color) => {
+        context.strokeStyle = color;
+        context.beginPath();
+        context.arc(x, y, r, 0, Math.PI * 2);
+        context.stroke();
+      };
+
+      const render = debounce(() => {
+        const data = new Uint8ClampedArray(size * size * 4);
+
+        for (let x = 0; x < size; x++) {
+          for (let y = 0; y < size; y++) {
+            const value = maxwellTriangle.getValue(x, y);
+            if (value) {
+              const index = 4 * (y * size + x);
+              data[index] = value[0] * 255;
+              data[index + 1] = value[1] * 255;
+              data[index + 2] = value[2] * 255;
+              data[index + 3] = 255;
+            }
+          }
+        }
+
+        context.putImageData(new ImageData(data, size, size), 0, 0);
+
+        const [x, y] = maxwellTriangle.getPoint(...currentColor, context);
+
+        strokeCircle(context, x, y, 4, "#fff");
+        strokeCircle(context, x, y, 6, "#000");
+      }, 30);
+
+      render();
+
+      inputElement.addEventListener("input", (event) => {
+        fromHex(currentColor, event.target.value);
+        render();
+      });
+    </script>
+  </body>
+</html>
