@@ -1,6 +1,6 @@
 {
   "name": "maxwell-triangle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Get color values inside a Maxwell triangle from positions and vice versa.",
   "keywords": [
     "maxwell",
@@ -10,7 +10,10 @@
   ],
   "homepage": "https://github.com/dmnsgn/maxwell-triangle",
   "bugs": "https://github.com/dmnsgn/maxwell-triangle/issues",
-  "repository": "dmnsgn/maxwell-triangle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmnsgn/maxwell-triangle.git"
+  },
   "funding": [
     {
       "type": "individual",
